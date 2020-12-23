@@ -5,6 +5,7 @@ import {
   Image,
   Alert,
   FlatList,
+  StatusBar,
   Dimensions,
   SafeAreaView,
   TouchableOpacity,
@@ -210,45 +211,51 @@ const Home = ({navigation}) => {
   };
 
   return (
-    <SafeAreaView style={styles.mainContainer}>
-      <Card containerStyle={styles.headerCard}>
-        <View style={styles.headerContainer}>
-          <Text style={txtStyle(16).txtStyle}>Sneaker Hunter</Text>
-          <View style={styles.iconsContainer}>
-            <View style={{justifyContent: 'center'}}>
+    <>
+      <StatusBar
+        barStyle={'light-content'}
+        backgroundColor={theme.colors.blackColor}
+      />
+      <SafeAreaView style={styles.mainContainer}>
+        <Card containerStyle={styles.headerCard}>
+          <View style={styles.headerContainer}>
+            <Text style={txtStyle(16).txtStyle}>Sneaker Hunter</Text>
+            <View style={styles.iconsContainer}>
+              <View style={{justifyContent: 'center'}}>
+                <Icon
+                  type="MaterialIcons"
+                  name="date-range"
+                  onPress={() => togglePicker()}
+                  color={theme.colors.lightGrayColor}
+                  size={24}
+                  style={{paddingLeft: -30}}
+                />
+                <DateTimePickerModal
+                  isVisible={datePikrVisible}
+                  mode="date"
+                  onConfirm={(date) => handleDate(date)}
+                  onCancel={() => togglePicker()}
+                />
+              </View>
               <Icon
                 type="MaterialIcons"
-                name="date-range"
-                onPress={() => togglePicker()}
+                name="logout"
                 color={theme.colors.lightGrayColor}
                 size={24}
-                style={{paddingLeft: -30}}
-              />
-              <DateTimePickerModal
-                isVisible={datePikrVisible}
-                mode="date"
-                onConfirm={(date) => handleDate(date)}
-                onCancel={() => togglePicker()}
+                onPress={() => navigation.replace('Splash')}
               />
             </View>
-            <Icon
-              type="MaterialIcons"
-              name="logout"
-              color={theme.colors.lightGrayColor}
-              size={24}
-              onPress={() => navigation.replace('Splash')}
-            />
           </View>
-        </View>
-      </Card>
-      <FlatList
-        data={data && data}
-        extraData={data}
-        keyExtractor={(item, index) => index.toString()}
-        renderItem={renderItem}
-        showsVerticalScrollIndicator={false}
-      />
-    </SafeAreaView>
+        </Card>
+        <FlatList
+          data={data && data}
+          extraData={data}
+          keyExtractor={(item, index) => index.toString()}
+          renderItem={renderItem}
+          showsVerticalScrollIndicator={false}
+        />
+      </SafeAreaView>
+    </>
   );
 };
 

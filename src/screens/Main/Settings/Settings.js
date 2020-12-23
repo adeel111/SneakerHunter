@@ -32,10 +32,16 @@ const Settings = () => {
         </View>
       </Card>
       <ScrollView
-        contentContainerStyle={{flex: 1}}
+        contentContainerStyle={{flexGrow: 1}}
         showsVerticalScrollIndicator={false}>
         <View style={{flex: 1, alignItems: 'center', justifyContent: 'center'}}>
-          <View style={inputTxtStyle('80%').inputTxtStyle}>
+          <View
+            style={[
+              inputTxtStyle('80%').inputTxtStyle,
+              {
+                margin: moderateScale(moderateScale(15)),
+              },
+            ]}>
             <Icon
               type="Ionicons"
               name="person"
@@ -50,7 +56,13 @@ const Settings = () => {
               }}
             />
           </View>
-          <View style={inputTxtStyle('80%').inputTxtStyle}>
+          <View
+            style={[
+              inputTxtStyle('80%').inputTxtStyle,
+              {
+                margin: moderateScale(moderateScale(15)),
+              },
+            ]}>
             <Icon
               type="MaterialIcons"
               name="email"
@@ -67,7 +79,13 @@ const Settings = () => {
               }}
             />
           </View>
-          <View style={inputTxtStyle('80%').inputTxtStyle}>
+          <View
+            style={[
+              inputTxtStyle('80%').inputTxtStyle,
+              {
+                margin: moderateScale(moderateScale(15)),
+              },
+            ]}>
             <Icon
               type="MaterialIcons"
               name="lock"
@@ -85,7 +103,13 @@ const Settings = () => {
               }}
             />
           </View>
-          <View style={inputTxtStyle('80%').inputTxtStyle}>
+          <View
+            style={[
+              inputTxtStyle('80%').inputTxtStyle,
+              {
+                margin: moderateScale(moderateScale(15)),
+              },
+            ]}>
             <Icon
               type="MaterialIcons"
               name="lock"
@@ -103,7 +127,13 @@ const Settings = () => {
               }}
             />
           </View>
-          <View style={inputTxtStyle('80%').inputTxtStyle}>
+          <View
+            style={[
+              inputTxtStyle('80%').inputTxtStyle,
+              {
+                margin: moderateScale(moderateScale(15)),
+              },
+            ]}>
             <Icon
               type="MaterialIcons"
               name="lock"
