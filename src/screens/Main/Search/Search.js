@@ -1,4 +1,4 @@
-import React, {useState} from 'react';
+import React, {useState, useEffect} from 'react';
 import {
   View,
   Text,
@@ -10,11 +10,13 @@ import {
   SafeAreaView,
   TouchableOpacity,
 } from 'react-native';
+import Modal from 'react-native-modal';
+import Swiper from 'react-native-swiper';
 import {Icon, Card} from 'react-native-elements';
 import LinearGradient from 'react-native-linear-gradient';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import DateTimePickerModal from 'react-native-modal-datetime-picker';
-import {one, two, three} from '../../../assets';
+import {one, two, three, filter} from '../../../assets';
 import {imgStyle, txtStyle} from '../../../utils/CommonStyles';
 import {moderateScale} from '../../../constants/ScalingUnit';
 import theme from '../../../theme';
@@ -74,12 +76,25 @@ const articlesData = [
   },
 ];
 
+const imagesArray = [{img: one}, {img: two}, {img: three}];
+
 const Search = ({navigation}) => {
   const [search, setSearch] = useState('Search');
   const [data, setData] = useState(articlesData);
   const [filterData, setFilterData] = useState(articlesData);
   const [date, setDate] = useState('');
   const [datePikrVisible, setDatePikrVisible] = useState(false);
+  const [status, setStatus] = useState('');
+  const [showModal, setShowModal] = useState(false);
+
+  useEffect(() => {
+    getStatus();
+  }, []);
+
+  const getStatus = async () => {
+    const guest = await AsyncStorage.getItem('guest');
+    setStatus(guest);
+  };
 
   const togglePicker = () => {
     setDatePikrVisible(!datePikrVisible);
@@ -140,7 +155,10 @@ const Search = ({navigation}) => {
     return (
       <Card containerStyle={styles.cardContainer}>
         <View style={{flex: 1, flexDirection: 'row'}}>
-          <View style={{flex: 0.5, backgroundColor: '#E8E8E8'}}>
+          <TouchableOpacity
+            activeOpacity={0.9}
+            onPress={() => setShowModal(!showModal)}
+            style={{flex: 0.5, backgroundColor: '#E8E8E8'}}>
             <Text style={styles.priceTxtStyle}>{item.price}</Text>
             <View style={styles.imgContainer}>
               <Image
@@ -149,7 +167,7 @@ const Search = ({navigation}) => {
                 style={imgStyle(width / 3.5, height / 8.5).imgStyle}
               />
             </View>
-          </View>
+          </TouchableOpacity>
           <View style={{flex: 0.5}}>
             <View
               style={{flexDirection: 'row', justifyContent: 'space-between'}}>
@@ -196,7 +214,11 @@ const Search = ({navigation}) => {
               </LinearGradient>
             </TouchableOpacity>
           </View>
-          <View style={{flex: 0.5, backgroundColor: '#E8E8E8'}}>
+
+          <TouchableOpacity
+            activeOpacity={0.9}
+            onPress={() => setShowModal(!showModal)}
+            style={{flex: 0.5, backgroundColor: '#E8E8E8'}}>
             <Text style={styles.priceTxtStyle}>{item.price}</Text>
             <View style={styles.imgContainer}>
               <Image
@@ -205,7 +227,7 @@ const Search = ({navigation}) => {
                 style={imgStyle(width / 3.5, height / 8.5).imgStyle}
               />
             </View>
-          </View>
+          </TouchableOpacity>
         </View>
       </Card>
     );
@@ -220,28 +242,66 @@ const Search = ({navigation}) => {
     }
   };
 
+  const renderModel = () => {
+    return (
+      <Modal
+        isVisible={showModal}
+        coverScreen={true}
+        hasBackdrop={true}
+        animationIn="slideInUp"
+        // swipeDirection="right"
+      >
+        <Icon
+          type="entypo"
+          name="circle-with-cross"
+          color={theme.colors.lightGrayColor}
+          iconStyle={{alignSelf: 'flex-end', marginBottom: moderateScale(10)}}
+          onPress={() => setShowModal(!showModal)}
+        />
+        <View style={styles.modalViewContainer}>
+          <Swiper
+            dots
+            dotColor={theme.colors.lightGrayColor}
+            activeDotColor={theme.colors.primaryColor}
+            // autoplay={true}
+            autoplayTimeout={3}
+            dotStyle={styles.dotStyle}
+            activeDotStyle={styles.activeDotStyle}
+            onMomentumScrollEnd={(e, state, context) =>
+              console.log('index:', state.index)
+            }
+            paginationStyle={{}}
+            loop>
+            {imagesArray.map((item, index) => {
+              return (
+                <View
+                  style={{
+                    padding: moderateScale(5),
+                    backgroundColor: '#E8E8E8',
+                  }}>
+                  <Image
+                    key={index}
+                    source={item?.img}
+                    style={{width: '100%', height: height / 3, borderRadius: 5}}
+                    resizeMode="contain"
+                  />
+                </View>
+              );
+            })}
+          </Swiper>
+        </View>
+      </Modal>
+    );
+  };
+
   return (
     <SafeAreaView style={styles.mainContainer}>
       <Card containerStyle={styles.headerCard}>
         <View style={styles.headerContainer}>
           <Text style={txtStyle(16).txtStyle}>Sneaker Hunter</Text>
-          <View style={styles.iconsContainer}>
-            <View style={{justifyContent: 'center'}}>
-              <Icon
-                type="MaterialIcons"
-                name="date-range"
-                onPress={() => togglePicker()}
-                color={theme.colors.lightGrayColor}
-                size={24}
-                style={{paddingLeft: -30}}
-              />
-              <DateTimePickerModal
-                isVisible={datePikrVisible}
-                mode="date"
-                onConfirm={(date) => handleDate(date)}
-                onCancel={() => togglePicker()}
-              />
-            </View>
+          {status === 'true' ? (
+            <Text />
+          ) : (
             <Icon
               type="MaterialIcons"
               name="logout"
@@ -249,31 +309,53 @@ const Search = ({navigation}) => {
               size={24}
               onPress={() => navigation.replace('Splash')}
             />
-          </View>
+          )}
         </View>
       </Card>
-      <View style={styles.searchContainer}>
-        <View style={{flexDirection: 'row', alignItems: 'center'}}>
-          <TextInput
-            placeholder={'Search'}
-            inputType="default"
-            capitalize={'none'}
-            onChangeText={(text) => {
-              searchItem(text);
-            }}
-            style={styles.inputStyle}
-          />
-          <View style={styles.srchIconContainer}>
-            <Icon
-              type="Ionicons"
-              name="search"
-              color={theme.colors.lightGrayColor}
-              iconStyle={[styles.iconStyle, {marginLeft: 5}]}
+      <View style={styles.rowContainer}>
+        <View style={styles.searchContainer}>
+          <View style={{flexDirection: 'row', alignItems: 'center'}}>
+            <TextInput
+              placeholder={'Search'}
+              inputType="default"
+              capitalize={'none'}
+              onChangeText={(text) => {
+                searchItem(text);
+              }}
+              style={styles.inputStyle}
             />
+            <View style={styles.srchIconContainer}>
+              <Icon
+                type="Ionicons"
+                name="search"
+                color={theme.colors.lightGrayColor}
+                iconStyle={[styles.iconStyle, {marginLeft: 5}]}
+              />
+            </View>
           </View>
         </View>
+        <TouchableOpacity
+          activeOpacity={0.9}
+          onPress={() => togglePicker()}
+          style={{
+            marginRight: moderateScale(10),
+          }}>
+          <Image
+            source={filter}
+            resizeMode="contain"
+            style={[
+              imgStyle(30, 30).imgStyle,
+              {tintColor: theme.colors.lightGrayColor},
+            ]}
+          />
+          <DateTimePickerModal
+            isVisible={datePikrVisible}
+            mode="date"
+            onConfirm={(date) => handleDate(date)}
+            onCancel={() => togglePicker()}
+          />
+        </TouchableOpacity>
       </View>
-
       <FlatList
         data={data && data}
         extraData={data}
@@ -281,6 +363,7 @@ const Search = ({navigation}) => {
         renderItem={renderItem}
         showsVerticalScrollIndicator={false}
       />
+      {showModal && renderModel()}
     </SafeAreaView>
   );
 };

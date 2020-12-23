@@ -1,5 +1,5 @@
 import React from 'react';
-import {StyleSheet, Dimensions} from 'react-native';
+import {Platform, StyleSheet, Dimensions} from 'react-native';
 import {moderateScale} from '../../../constants/ScalingUnit';
 import theme from '../../../theme';
 
@@ -27,18 +27,18 @@ const styles = StyleSheet.create({
     justifyContent: 'space-between',
     backgroundColor: theme.colors.whiteColor,
   },
-  iconsContainer: {
-    flex: 0.3,
+  rowContainer: {
     flexDirection: 'row',
-    justifyContent: 'space-between',
+    alignItems: 'center',
+    justifyContent: 'space-around',
+    marginTop: moderateScale(30),
+    marginBottom: moderateScale(10),
   },
   searchContainer: {
     borderRadius: 5,
     borderWidth: 1,
-    marginTop: moderateScale(30),
-    marginBottom: moderateScale(10),
-    width: '85%',
-    height: width / 7.5,
+    width: width / 1.35,
+    height: width / 7.7,
     flexDirection: 'row',
     alignSelf: 'center',
     alignItems: 'center',
@@ -47,6 +47,7 @@ const styles = StyleSheet.create({
     backgroundColor: theme.colors.whiteColor,
     borderTopLeftRadius: 13,
     borderBottomLeftRadius: 13,
+    marginLeft: moderateScale(10),
   },
   inputStyle: {
     width: '85%',
@@ -60,9 +61,9 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     borderTopLeftRadius: moderateScale(25),
     borderBottomLeftRadius: moderateScale(25),
-    width: moderateScale(50),
-    marginRight: -8,
-    height: width / 7.5,
+    width: moderateScale(45),
+    marginRight: moderateScale(-7),
+    height: width / 7.7,
     backgroundColor: theme.colors.primaryColor,
   },
   iconStyle: {
@@ -111,6 +112,26 @@ const styles = StyleSheet.create({
     color: theme.colors.grayColor,
     backgroundColor: 'transparent',
     fontFamily: theme.fontFamily.regular,
+  },
+  // modal styles
+  modalViewContainer: {
+    flex: Platform.OS === 'android' ? 0.5 : 0.45,
+    width: Dimensions.get('window').width / 1.12,
+    borderRadius: moderateScale(5),
+    padding: moderateScale(10),
+    backgroundColor: 'white',
+  },
+  dotStyle: {
+    height: moderateScale(10),
+    width: moderateScale(10),
+    top: moderateScale(15),
+    borderRadius: moderateScale(7),
+  },
+  activeDotStyle: {
+    width: moderateScale(10),
+    height: moderateScale(10),
+    top: moderateScale(15),
+    borderRadius: moderateScale(7),
   },
 });
 

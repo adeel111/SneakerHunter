@@ -27,11 +27,6 @@ const styles = StyleSheet.create({
     justifyContent: 'space-between',
     backgroundColor: theme.colors.whiteColor,
   },
-  iconsContainer: {
-    flex: 0.3,
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-  },
   cardContainer: {
     flex: 1,
     width: '90%',
@@ -73,6 +68,26 @@ const styles = StyleSheet.create({
     color: theme.colors.grayColor,
     backgroundColor: 'transparent',
     fontFamily: theme.fontFamily.regular,
+  },
+  // modal styles
+  modalViewContainer: {
+    flex: Platform.OS === 'android' ? 0.5 : 0.45,
+    width: Dimensions.get('window').width / 1.12,
+    borderRadius: moderateScale(5),
+    padding: moderateScale(10),
+    backgroundColor: 'white',
+  },
+  dotStyle: {
+    height: moderateScale(10),
+    width: moderateScale(10),
+    top: moderateScale(15),
+    borderRadius: moderateScale(7),
+  },
+  activeDotStyle: {
+    width: moderateScale(10),
+    height: moderateScale(10),
+    top: moderateScale(15),
+    borderRadius: moderateScale(7),
   },
 });
 

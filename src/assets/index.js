@@ -2,7 +2,7 @@
 export const logo = require('../assets/logo/logo.png');
 
 // icons
-// export const drawer = require('../assets/icons/drawer.png');
+export const filter = require('../assets/icons/filter.png');
 
 // images
 export const header = require('../assets/images/header.png');

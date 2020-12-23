@@ -19,7 +19,7 @@ import InputField from '../../../components/InputField';
 import theme from '../../../theme';
 import styles from './styles';
 
-const {height} = Dimensions.get('window');
+const {width, height} = Dimensions.get('window');
 const gradientColors = [theme.colors.lightBlackColor, theme.colors.blackColor];
 
 const Login = ({navigation}) => {
@@ -49,10 +49,11 @@ const Login = ({navigation}) => {
           <View style={{flex: 0.3}}>
             <Image
               source={header}
+              resizeMode="cover"
               style={[
                 imgStyle(
-                  '100%',
-                  Platform.OS === 'android' ? height / 3.6 : height / 4.15,
+                  width,
+                  Platform.OS === 'android' ? height / 3.54 : height / 4.06,
                 ).imgStyle,
               ]}
             />
