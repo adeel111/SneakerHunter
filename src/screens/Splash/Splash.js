@@ -20,7 +20,7 @@ const gradientColors = [theme.colors.lightBlackColor, theme.colors.blackColor];
 const Splash = ({navigation}) => {
   useEffect(() => {
     (async () => {
-      const login = await AsyncStorage.getItem('Login');
+      // const login = await AsyncStorage.getItem('Login');
       // if (login) {
       // navigation.replace('Auth');
       // } else {
@@ -29,13 +29,19 @@ const Splash = ({navigation}) => {
     })();
   }, []);
 
-  const replaceScreen = (screen) => {
-    navigation.replace('Auth', {screen});
+  const replaceScreen = async (screen) => {
+    if (screen === 'BottomTabs') {
+      await AsyncStorage.setItem('guest', 'true');
+      navigation.replace('BottomTabs');
+    } else {
+      await AsyncStorage.setItem('guest', 'false');
+      navigation.replace('Auth', {screen});
+    }
   };
 
   return (
     <>
-      <StatusBar hidden barStyle={'light-content'}/>
+      <StatusBar hidden barStyle={'light-content'} />
       <Animatable.View
         style={styles.mainContainer}
         animation="fadeIn"
@@ -65,6 +71,9 @@ const Splash = ({navigation}) => {
               </LinearGradient>
             </TouchableOpacity>
           </Animatable.View>
+          <View
+            style={{width: 1.5, backgroundColor: theme.colors.whiteColor}}
+          />
           <Animatable.View
             style={{flex: 0.5}}
             animation="bounceInRight"
@@ -72,7 +81,7 @@ const Splash = ({navigation}) => {
             <TouchableOpacity
               activeOpacity={0.9}
               style={{flex: 0.5}}
-              onPress={() => alert('todo!')}>
+              onPress={() => replaceScreen('BottomTabs')}>
               <LinearGradient
                 colors={gradientColors}
                 style={styles.linearGradient}>

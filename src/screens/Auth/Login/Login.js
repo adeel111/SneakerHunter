@@ -11,6 +11,7 @@ import {
 } from 'react-native';
 import {Icon} from 'react-native-elements';
 import LinearGradient from 'react-native-linear-gradient';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 import {header} from '../../../assets';
 import {imgStyle, inputTxtStyle, txtStyle} from '../../../utils/CommonStyles';
 import {moderateScale} from '../../../constants/ScalingUnit';
@@ -25,8 +26,13 @@ const Login = ({navigation}) => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
 
-  const replaceScreen = (screen) => {
-    navigation.navigate(screen);
+  const replaceScreen = async (screen) => {
+    if (screen === 'BottomTabs') {
+      await AsyncStorage.setItem('guest', 'false');
+      navigation.replace(screen);
+    } else {
+      navigation.navigate(screen);
+    }
   };
 
   return (
@@ -100,10 +106,7 @@ const Login = ({navigation}) => {
                 }}
               />
             </View>
-            <Text
-              style={styles.forgotTextStyle}
-              //  onPress={() => alert('todo!')}
-            >
+            <Text style={styles.forgotTextStyle} onPress={() => alert('todo!')}>
               Forgot Password ?
             </Text>
           </View>
@@ -111,8 +114,7 @@ const Login = ({navigation}) => {
             <TouchableOpacity
               activeOpacity={0.9}
               style={styles.buttonStyle}
-              // onPress={() => alert('todo!')}
-            >
+              onPress={() => replaceScreen('BottomTabs')}>
               <LinearGradient
                 colors={gradientColors}
                 style={styles.linearGradient}>
@@ -122,7 +124,7 @@ const Login = ({navigation}) => {
             <Text
               style={styles.bottomTextStyle}
               onPress={() => replaceScreen('SignUp')}>
-              New here.. ?{' '}
+              New here ?{' '}
               <Text style={{color: theme.colors.primaryColor}}>Sign Up</Text>
             </Text>
           </View>

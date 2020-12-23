@@ -103,7 +103,7 @@ export const dividerStyle = (
 ) =>
   StyleSheet.create({
     dividerStyle: {
-      width: moderateScale(width),
+      width: width,
       height: moderateScale(height),
       marginTop: moderateScale(top),
       marginBottom: moderateScale(bottom),

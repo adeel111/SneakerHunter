@@ -11,6 +11,7 @@ import {
 } from 'react-native';
 import {Icon} from 'react-native-elements';
 import LinearGradient from 'react-native-linear-gradient';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 import {header} from '../../../assets';
 import {imgStyle, inputTxtStyle} from '../../../utils/CommonStyles';
 import InputField from '../../../components/InputField';
@@ -26,8 +27,13 @@ const SignUp = ({navigation}) => {
   const [password, setPassword] = useState('');
   const [confirmPass, setConfirmPass] = useState('');
 
-  const replaceScreen = (screen) => {
-    navigation.navigate(screen);
+  const replaceScreen = async (screen) => {
+    if (screen === 'BottomTabs') {
+      navigation.replace(screen);
+      await AsyncStorage.setItem('guest', 'false');
+    } else {
+      navigation.navigate(screen);
+    }
   };
 
   return (
@@ -127,8 +133,7 @@ const SignUp = ({navigation}) => {
             <TouchableOpacity
               activeOpacity={0.9}
               style={styles.buttonStyle}
-              // onPress={() => alert('todo!')}
-            >
+              onPress={() => replaceScreen('BottomTabs')}>
               <LinearGradient
                 colors={gradientColors}
                 style={styles.linearGradient}>
