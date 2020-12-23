@@ -3,7 +3,6 @@ import {
   View,
   Text,
   Image,
-  Platform,
   StatusBar,
   ScrollView,
   Dimensions,
@@ -13,13 +12,13 @@ import {Icon} from 'react-native-elements';
 import LinearGradient from 'react-native-linear-gradient';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import {header} from '../../../assets';
-import {imgStyle, inputTxtStyle, txtStyle} from '../../../utils/CommonStyles';
+import {inputTxtStyle, txtStyle} from '../../../utils/CommonStyles';
 import {moderateScale} from '../../../constants/ScalingUnit';
 import InputField from '../../../components/InputField';
 import theme from '../../../theme';
 import styles from './styles';
 
-const {width, height} = Dimensions.get('window');
+const {width} = Dimensions.get('window');
 const gradientColors = [theme.colors.lightBlackColor, theme.colors.blackColor];
 
 const Login = ({navigation}) => {
@@ -49,13 +48,8 @@ const Login = ({navigation}) => {
           <View style={{flex: 0.3}}>
             <Image
               source={header}
-              resizeMode="cover"
-              style={[
-                imgStyle(
-                  width,
-                  Platform.OS === 'android' ? height / 3.54 : height / 4.06,
-                ).imgStyle,
-              ]}
+              resizeMode="center"
+              style={styles.headerImgStyle}
             />
             <Text
               style={[

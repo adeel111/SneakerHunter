@@ -14,6 +14,11 @@ const styles = StyleSheet.create({
     fontFamily: theme.fontFamily.regular,
     color: theme.colors.lightBlackColor,
   },
+  headerImgStyle: {
+    width: width,
+    height: moderateScale(190),
+    marginTop: moderateScale(-3),
+  },
   buttonStyle: {
     width: width / 1.25,
     alignSelf: 'center',

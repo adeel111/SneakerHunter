@@ -3,9 +3,14 @@ import {StyleSheet, Dimensions} from 'react-native';
 import {moderateScale} from '../../../constants/ScalingUnit';
 import theme from '../../../theme';
 
-const {width} = Dimensions.get('window');
+const {width, height} = Dimensions.get('window');
 
 const styles = StyleSheet.create({
+  headerImgStyle: {
+    width: width,
+    height: moderateScale(190),
+    marginTop: moderateScale(-3),
+  },
   forgotTextStyle: {
     fontSize: moderateScale(13),
     alignSelf: 'flex-end',
