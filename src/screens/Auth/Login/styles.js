@@ -16,7 +16,7 @@ const styles = StyleSheet.create({
   },
   headerImgStyle: {
     width: width,
-    height: moderateScale(190),
+    height: moderateScale(200),
     marginTop: moderateScale(-3),
   },
   buttonStyle: {

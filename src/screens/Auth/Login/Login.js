@@ -48,7 +48,7 @@ const Login = ({navigation}) => {
           <View style={{flex: 0.3}}>
             <Image
               source={header}
-              resizeMode="center"
+              resizeMode="cover"
               style={styles.headerImgStyle}
             />
             <Text

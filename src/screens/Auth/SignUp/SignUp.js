@@ -48,11 +48,7 @@ const SignUp = ({navigation}) => {
           showsVerticalScrollIndicator={false}
           contentContainerStyle={{flexGrow: 1}}>
           <View style={{flex: 0.3}}>
-            <Image
-              source={header}
-              resizeMode="center"
-              style={styles.headerImgStyle}
-            />
+            <Image source={header} style={styles.headerImgStyle} />
           </View>
 
           <View style={{flex: 0.4}}>
