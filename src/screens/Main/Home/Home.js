@@ -121,7 +121,9 @@ const Search = ({navigation}) => {
               </Text>
             </View>
             <View style={{flex: 1}}>
-              <Text style={styles.dateTxtStyle}>{item?.description}</Text>
+              <Text numberOfLines={5} style={styles.dateTxtStyle}>
+                {item?.description}
+              </Text>
             </View>
             <TouchableOpacity
               activeOpacity={0.9}
@@ -150,7 +152,9 @@ const Search = ({navigation}) => {
               </Text>
             </View>
             <View style={{flex: 1}}>
-              <Text style={styles.dateTxtStyle}>{item?.description}</Text>
+              <Text numberOfLines={5} style={styles.dateTxtStyle}>
+                {item?.description}
+              </Text>
             </View>
             <TouchableOpacity
               activeOpacity={0.9}
