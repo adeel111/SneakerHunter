@@ -9,91 +9,66 @@ import {
   Dimensions,
   SafeAreaView,
   TouchableOpacity,
+  ActivityIndicator,
 } from 'react-native';
+import moment from 'moment';
 import Modal from 'react-native-modal';
 import Swiper from 'react-native-swiper';
 import {Icon, Card} from 'react-native-elements';
 import LinearGradient from 'react-native-linear-gradient';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import DateTimePickerModal from 'react-native-modal-datetime-picker';
+import ShowSnackBar from '../../../components/ShowSnackBar';
 import {one, two, three, filter} from '../../../assets';
 import {imgStyle, txtStyle} from '../../../utils/CommonStyles';
 import {moderateScale} from '../../../constants/ScalingUnit';
 import theme from '../../../theme';
 import styles from './styles';
+import {Loading} from '../../../components/Loading';
+
+// redux stuff
+import {useDispatch, useSelector} from 'react-redux';
+import {logout} from '../../../redux/actions/auth';
+import {getProducts, setReminder} from '../../../redux/actions/home';
 
 const {width, height} = Dimensions.get('window');
 const gradientColors = [theme.colors.lightBlackColor, theme.colors.blackColor];
-
-const articlesData = [
-  {
-    id: 1,
-    image: one,
-    price: '$ 28',
-    name: 'GUCCI',
-    date: 'Dec 28 2020',
-    desc: `Gucci does not offer discounts, but you will often be able to find Gucci products on sales.`,
-  },
-  {
-    id: 2,
-    image: two,
-    price: '$ 38',
-    name: 'Crocs',
-    date: 'Dec 29 2020',
-    desc: `Crocs does not offer discounts, but you will often be able to find Gucci products on sales.`,
-  },
-  {
-    id: 3,
-    image: three,
-    price: '$ 21',
-    name: 'Nike',
-    date: 'Dec 28 2020',
-    desc: `Nike does not offer discounts, but you will often be able to find Gucci products on sales.`,
-  },
-  {
-    id: 4,
-    image: one,
-    price: '$ 28',
-    name: 'GUCCI',
-    date: 'Dec 28 2020',
-    desc: `Gucci does not offer discounts, but you will often be able to find Gucci products on sales.`,
-  },
-  {
-    id: 5,
-    image: two,
-    price: '$ 28',
-    name: 'Crocs',
-    date: 'Dec 28 2020',
-    desc: `Gucci does not offer discounts, but you will often be able to find Gucci products on sales.`,
-  },
-  {
-    id: 6,
-    image: three,
-    price: '$ 21',
-    name: 'Nike',
-    date: 'Dec 28 2020',
-    desc: `Gucci does not offer discounts, but you will often be able to find Gucci products on sales.`,
-  },
-];
 
 const imagesArray = [{img: one}, {img: two}, {img: three}];
 
 const Search = ({navigation}) => {
   const [search, setSearch] = useState('Search');
-  const [data, setData] = useState(articlesData);
-  const [filterData, setFilterData] = useState(articlesData);
+  const [data, setData] = useState([]);
+  const [filterData, setFilterData] = useState([]);
   const [date, setDate] = useState('');
   const [datePikrVisible, setDatePikrVisible] = useState(false);
   const [status, setStatus] = useState('');
   const [showModal, setShowModal] = useState(false);
+  const [loading, setLoading] = useState(false);
+
+  //   redux stuff
+  const dispatch = useDispatch();
+  const {token} = useSelector((state) => state.auth);
+  const {isLoading, products} = useSelector((state) => state.home);
 
   useEffect(() => {
     getStatus();
-  }, []);
+  }, [navigation]);
 
   const getStatus = async () => {
+    dispatch(getProducts(onSuccess1, onError1));
     const guest = await AsyncStorage.getItem('guest');
     setStatus(guest);
+  };
+
+  const onSuccess1 = (res) => {
+    console.log(res);
+    setData(res.data.data);
+    setFilterData(res.data.data);
+  };
+
+  const onError1 = (err) => {
+    console.log(err);
   };
 
   const togglePicker = () => {
@@ -124,16 +99,14 @@ const Search = ({navigation}) => {
 
   const searchItem = (search) => {
     const searchData = filterData?.filter((item) =>
-      item?.name.toUpperCase().includes(search.toUpperCase()),
+      item?.brand_name.toUpperCase().includes(search.toUpperCase()),
     );
     setSearch(search);
     setData(searchData);
   };
 
-  const handleReminder = async () => {
+  const handleReminder = async (id) => {
     const guest = await AsyncStorage.getItem('guest');
-    // alert(guest);
-
     if (guest === 'true') {
       Alert.alert(
         'Login',
@@ -147,8 +120,20 @@ const Search = ({navigation}) => {
         {cancelable: false},
       );
     } else {
-      alert('Reminder has been set.');
+      const params = {
+        product_id: id,
+      };
+      dispatch(setReminder(params, token, onSuccess2, onError2));
     }
+  };
+
+  const onSuccess2 = (res) => {
+    console.log(res);
+    ShowSnackBar('Product is added into Reminders List.');
+  };
+
+  const onError2 = (err) => {
+    console.log(err);
   };
 
   const RenderLeftItem = ({item, index}) => {
@@ -159,10 +144,10 @@ const Search = ({navigation}) => {
             activeOpacity={0.9}
             onPress={() => setShowModal(!showModal)}
             style={{flex: 0.5, backgroundColor: '#E8E8E8'}}>
-            <Text style={styles.priceTxtStyle}>{item.price}</Text>
+            <Text style={styles.priceTxtStyle}>$ {item?.price}</Text>
             <View style={styles.imgContainer}>
               <Image
-                source={item.image}
+                source={{uri: item?.image}}
                 resizeMode="contain"
                 style={imgStyle(width / 3.5, height / 8.5).imgStyle}
               />
@@ -171,14 +156,18 @@ const Search = ({navigation}) => {
           <View style={{flex: 0.5}}>
             <View
               style={{flexDirection: 'row', justifyContent: 'space-between'}}>
-              <Text style={styles.priceTxtStyle}>{item.name}</Text>
-              <Text style={styles.dateTxtStyle}>{item.date}</Text>
+              <Text style={styles.priceTxtStyle}>{item?.brand_name}</Text>
+              <Text style={styles.dateTxtStyle}>
+                {moment(item?.release_date).format('ll')}
+              </Text>
             </View>
-            <Text style={styles.dateTxtStyle}>{item.desc}</Text>
+            <View style={{flex: 1}}>
+              <Text style={styles.dateTxtStyle}>{item?.description}</Text>
+            </View>
             <TouchableOpacity
               activeOpacity={0.9}
               style={styles.buttonStyle}
-              onPress={() => handleReminder()}>
+              onPress={() => handleReminder(item?.id)}>
               <LinearGradient colors={gradientColors}>
                 <Text style={styles.buttonText}>Reminder</Text>
               </LinearGradient>
@@ -196,10 +185,14 @@ const Search = ({navigation}) => {
           <View style={{flex: 0.5}}>
             <View
               style={{flexDirection: 'row', justifyContent: 'space-between'}}>
-              <Text style={styles.priceTxtStyle}>{item.name}</Text>
-              <Text style={styles.dateTxtStyle}>{item.date}</Text>
+              <Text style={styles.priceTxtStyle}>{item?.brand_name}</Text>
+              <Text style={styles.dateTxtStyle}>
+                {moment(item?.release_date).format('ll')}
+              </Text>
             </View>
-            <Text style={styles.dateTxtStyle}>{item.desc}</Text>
+            <View style={{flex: 1}}>
+              <Text style={styles.dateTxtStyle}>{item?.description}</Text>
+            </View>
             <TouchableOpacity
               activeOpacity={0.9}
               style={[
@@ -208,7 +201,7 @@ const Search = ({navigation}) => {
                   marginRight: moderateScale(10),
                 },
               ]}
-              onPress={() => handleReminder()}>
+              onPress={() => handleReminder(item?.id)}>
               <LinearGradient colors={gradientColors}>
                 <Text style={styles.buttonText}>Reminder</Text>
               </LinearGradient>
@@ -219,10 +212,10 @@ const Search = ({navigation}) => {
             activeOpacity={0.9}
             onPress={() => setShowModal(!showModal)}
             style={{flex: 0.5, backgroundColor: '#E8E8E8'}}>
-            <Text style={styles.priceTxtStyle}>{item.price}</Text>
+            <Text style={styles.priceTxtStyle}>$ {item?.price}</Text>
             <View style={styles.imgContainer}>
               <Image
-                source={item.image}
+                source={{uri: item?.image}}
                 resizeMode="contain"
                 style={imgStyle(width / 3.5, height / 8.5).imgStyle}
               />
@@ -234,7 +227,6 @@ const Search = ({navigation}) => {
   };
 
   const renderItem = ({item, index}) => {
-    console.log(item.id);
     if (item.id % 2 === 0) {
       return <RenderRightItem item={item} index={index} />;
     } else {
@@ -294,20 +286,39 @@ const Search = ({navigation}) => {
     );
   };
 
+  const handleLogout = async () => {
+    setLoading(true);
+    dispatch(logout(token, onSuccess, onError));
+  };
+
+  const onSuccess = async (res) => {
+    setLoading(false);
+    await AsyncStorage.setItem('login', 'false');
+    navigation.replace('Splash');
+  };
+
+  const onError = (err) => {
+    setLoading(false);
+    navigation.replace('Splash');
+  };
+
   return (
     <SafeAreaView style={styles.mainContainer}>
+      <Loading visible={isLoading} />
       <Card containerStyle={styles.headerCard}>
         <View style={styles.headerContainer}>
           <Text style={txtStyle(16).txtStyle}>Sneaker Hunter</Text>
           {status === 'true' ? (
             <Text />
+          ) : loading ? (
+            <ActivityIndicator animating color={theme.colors.primaryColor} />
           ) : (
             <Icon
               type="MaterialIcons"
               name="logout"
               color={theme.colors.lightGrayColor}
               size={24}
-              onPress={() => navigation.replace('Splash')}
+              onPress={() => handleLogout()}
             />
           )}
         </View>
@@ -356,13 +367,23 @@ const Search = ({navigation}) => {
           />
         </TouchableOpacity>
       </View>
-      <FlatList
-        data={data && data}
-        extraData={data}
-        keyExtractor={(item, index) => index.toString()}
-        renderItem={renderItem}
-        showsVerticalScrollIndicator={false}
-      />
+      <View style={{flex: 1, justifyContent: 'center'}}>
+        {data === undefined || data.length === 0 ? (
+          isLoading ? (
+            <Text style={styles.recordsTextStyle}>Loading...</Text>
+          ) : (
+            <Text style={styles.recordsTextStyle}>No Records Found</Text>
+          )
+        ) : (
+          <FlatList
+            data={data && data}
+            extraData={data}
+            keyExtractor={(item, index) => index.toString()}
+            renderItem={renderItem}
+            showsVerticalScrollIndicator={false}
+          />
+        )}
+      </View>
       {showModal && renderModel()}
     </SafeAreaView>
   );

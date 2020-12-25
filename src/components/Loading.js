@@ -5,7 +5,7 @@ import theme from '../theme';
 export const Loading = ({visible}) => (
   <ActivityIndicator
     animating
-    color={theme.colors.bluePColor}
+    color={theme.colors.primaryColor}
     style={visible ? loader.centering : loader.hideIndicator}
     size="large"
   />

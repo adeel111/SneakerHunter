@@ -133,6 +133,12 @@ const styles = StyleSheet.create({
     top: moderateScale(15),
     borderRadius: moderateScale(7),
   },
+  recordsTextStyle: {
+    fontSize: moderateScale(18),
+    alignSelf: 'center',
+    color: theme.colors.textColor,
+    fontFamily: theme.fontFamily.medium,
+  },
 });
 
 export default styles;

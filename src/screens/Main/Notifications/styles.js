@@ -45,6 +45,27 @@ const styles = StyleSheet.create({
     backgroundColor: 'transparent',
     fontFamily: theme.fontFamily.regular,
   },
+  recordsTextStyle: {
+    fontSize: moderateScale(18),
+    alignSelf: 'center',
+    textAlign: 'center',
+    color: theme.colors.textColor,
+    fontFamily: theme.fontFamily.medium,
+  },
+  buttonStyle: {
+    width: width / 1.25,
+    alignSelf: 'center',
+    marginTop: moderateScale(20),
+    marginBottom: moderateScale(20),
+  },
+  buttonText: {
+    fontSize: 18,
+    margin: moderateScale(13),
+    textAlign: 'center',
+    color: theme.colors.whiteColor,
+    backgroundColor: 'transparent',
+    fontFamily: theme.fontFamily.medium,
+  },
 });
 
 export default styles;

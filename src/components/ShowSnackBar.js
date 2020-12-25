@@ -4,7 +4,7 @@ import theme from '../theme';
 
 const ShowSnackBar = (
   text,
-  bgColor = theme.colors.redColor,
+  bgColor = theme.colors.primaryColor,
   duration = Snackbar.LENGTH_SHORT,
 ) => {
   Snackbar.show({

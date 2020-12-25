@@ -47,6 +47,13 @@ const styles = StyleSheet.create({
     backgroundColor: 'transparent',
     fontFamily: theme.fontFamily.medium,
   },
+  recordsTextStyle: {
+    fontSize: moderateScale(18),
+    alignSelf: 'center',
+    textAlign: 'center',
+    color: theme.colors.textColor,
+    fontFamily: theme.fontFamily.medium,
+  },
 });
 
 export default styles;

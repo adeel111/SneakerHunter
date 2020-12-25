@@ -5,20 +5,28 @@ import {
   Image,
   StatusBar,
   ScrollView,
-  Dimensions,
   TouchableOpacity,
 } from 'react-native';
 import {Icon} from 'react-native-elements';
 import LinearGradient from 'react-native-linear-gradient';
-import AsyncStorage from '@react-native-async-storage/async-storage';
 import {header} from '../../../assets';
 import {inputTxtStyle} from '../../../utils/CommonStyles';
 import InputField from '../../../components/InputField';
-import {moderateScale} from '../../../constants/ScalingUnit';
+import ShowSnackBar from '../../../components/ShowSnackBar';
 import theme from '../../../theme';
 import styles from './styles';
+import {Loading} from '../../../components/Loading';
 
-const {width} = Dimensions.get('window');
+// redux stuff
+import {useDispatch, useSelector} from 'react-redux';
+import {register} from '../../../redux/actions/auth';
+
+// Validate Email...
+const validateEmail = (email) => {
+  let pattern = /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
+  return pattern.test(String(email).toLowerCase());
+};
+
 const gradientColors = [theme.colors.lightBlackColor, theme.colors.blackColor];
 
 const SignUp = ({navigation}) => {
@@ -27,13 +35,57 @@ const SignUp = ({navigation}) => {
   const [password, setPassword] = useState('');
   const [confirmPass, setConfirmPass] = useState('');
 
-  const replaceScreen = async (screen) => {
-    if (screen === 'BottomTabs') {
-      navigation.replace(screen);
-      await AsyncStorage.setItem('guest', 'false');
-    } else {
-      navigation.navigate(screen);
+  //   redux stuff
+  const dispatch = useDispatch();
+  const {isLoading} = useSelector((state) => state.auth);
+
+  const handleSignUp = async () => {
+    const validation = validateData();
+    if (validation) {
+      const params = {
+        name: name,
+        email: email,
+        password: password,
+      };
+      dispatch(register(params, onSuccess, onError));
     }
+  };
+
+  const onSuccess = async (res) => {
+    ShowSnackBar('Your account is created.');
+    replaceScreen('Login');
+  };
+
+  const onError = (err) => {
+    console.log(err);
+    ShowSnackBar('The given data is invalid.');
+  };
+
+  const validateData = () => {
+    if (name === '' || email === '' || password === '' || confirmPass === '') {
+      ShowSnackBar('Kindly fill all the fields.');
+      return false;
+    } else {
+      if (validateEmail(email) === true) {
+        if (password === confirmPass) {
+          if (password.length >= 8) {
+            return true;
+          } else {
+            ShowSnackBar('The password must be at least 8 characters.');
+          }
+        } else {
+          ShowSnackBar('Passwords are not equal.');
+          return false;
+        }
+      } else {
+        ShowSnackBar('Kindly enter valid email.');
+        return false;
+      }
+    }
+  };
+
+  const replaceScreen = async (screen) => {
+    navigation.navigate(screen);
   };
 
   return (
@@ -43,6 +95,7 @@ const SignUp = ({navigation}) => {
         backgroundColor={theme.colors.blackColor}
       />
       <View style={{flex: 1}}>
+        <Loading visible={isLoading} />
         <ScrollView
           nestedScrollEnabled={true}
           showsVerticalScrollIndicator={false}
@@ -125,7 +178,7 @@ const SignUp = ({navigation}) => {
             <TouchableOpacity
               activeOpacity={0.9}
               style={styles.buttonStyle}
-              onPress={() => replaceScreen('BottomTabs')}>
+              onPress={() => handleSignUp()}>
               <LinearGradient
                 colors={gradientColors}
                 style={styles.linearGradient}>

@@ -1,45 +1,49 @@
 import * as types from '../actions/types';
-import {AUTH_PENDING, AUTH_ERROR} from '../actions/auth';
+import {HOME_PENDING, HOME_ERROR} from '../actions/home';
 
 const initialState = {
   isSuccess: false,
   error: false,
   isLoading: false,
-  token: null,
-  userData: null,
+  products: null,
+  reminders: null,
 };
 
-export const authReducer = (state = initialState, action) => {
+export const homeReducer = (state = initialState, action) => {
   switch (action.type) {
-    case AUTH_PENDING:
+    case HOME_PENDING:
       return {
         ...state,
         isLoading: true,
       };
-    case AUTH_ERROR:
+    case HOME_ERROR:
       return {
         ...state,
         isLoading: false,
         isSuccess: false,
         error: action.payload,
       };
-    case types.LOGIN_SUCCESS:
+    case types.GET_PRODUCTS_SUCCESS:
       return {
         ...state,
         isLoading: false,
         isSuccess: true,
-        token: action.payload.data.token,
-        userData: action.payload.data.user,
+        products: action.payload.data.data,
       };
-    case types.REGISTER_SUCCESS:
+    case types.SET_REMINDER_SUCCESS:
       return {
         ...state,
         isLoading: false,
         isSuccess: true,
-        token: action.payload.data.token,
-        userData: action.payload.data.data,
       };
-    case types.LOGOUT_SUCCESS:
+    case types.GET_REMINDERS_SUCCESS:
+      return {
+        ...state,
+        isLoading: false,
+        isSuccess: true,
+        reminders: action.payload.data.data,
+      };
+    case types.UPDATE_PROFILE_SUCCESS:
       return {
         ...state,
         isLoading: false,

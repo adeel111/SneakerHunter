@@ -20,12 +20,10 @@ const gradientColors = [theme.colors.lightBlackColor, theme.colors.blackColor];
 const Splash = ({navigation}) => {
   useEffect(() => {
     (async () => {
-      // const login = await AsyncStorage.getItem('Login');
-      // if (login) {
-      // navigation.replace('Auth');
-      // } else {
-      // alert('Not Logged in');
-      // }
+      const isLogin = await AsyncStorage.getItem('login');
+      if (isLogin === 'true') {
+        navigation.replace('BottomTabs');
+      }
     })();
   }, []);
 
