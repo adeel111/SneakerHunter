@@ -27,6 +27,11 @@ const styles = StyleSheet.create({
     justifyContent: 'space-between',
     backgroundColor: theme.colors.whiteColor,
   },
+  iconsContainer: {
+    flex: 0.3,
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+  },
   rowContainer: {
     flexDirection: 'row',
     alignItems: 'center',

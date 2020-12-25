@@ -40,6 +40,9 @@ const Search = ({navigation}) => {
   const [search, setSearch] = useState('Search');
   const [data, setData] = useState([]);
   const [filterData, setFilterData] = useState([]);
+  const [results, setResults] = useState([]);
+  const [filterResults, setFilterResults] = useState([]);
+  const [isFilter, setIsFilter] = useState(false);
   const [date, setDate] = useState('');
   const [datePikrVisible, setDatePikrVisible] = useState(false);
   const [status, setStatus] = useState('');
@@ -59,6 +62,7 @@ const Search = ({navigation}) => {
     dispatch(getProducts(onSuccess1, onError1));
     const guest = await AsyncStorage.getItem('guest');
     setStatus(guest);
+    setIsFilter(false);
   };
 
   const onSuccess1 = (res) => {
@@ -78,7 +82,16 @@ const Search = ({navigation}) => {
   // handle date picker...
   const handleDate = (date) => {
     const selectedDate = getDate(new Date(date));
-    setDate(selectedDate);
+    let formatedDate = moment(selectedDate).format('ll');
+    let searchResults = data.filter((item) => {
+      let releaseDate = moment(item?.release_date).format('ll');
+      if (releaseDate === formatedDate) return item;
+    });
+    setIsFilter(true);
+    console.log(searchResults);
+    setResults(searchResults);
+    setFilterResults(searchResults);
+    // setDate(selectedDate);
     togglePicker();
   };
 
@@ -103,6 +116,14 @@ const Search = ({navigation}) => {
     );
     setSearch(search);
     setData(searchData);
+  };
+
+  const searchResults = (search) => {
+    const searchData = filterResults?.filter((item) =>
+      item?.brand_name.toUpperCase().includes(search.toUpperCase()),
+    );
+    setSearch(search);
+    setResults(searchData);
   };
 
   const handleReminder = async (id) => {
@@ -313,17 +334,35 @@ const Search = ({navigation}) => {
         <View style={styles.headerContainer}>
           <Text style={txtStyle(16).txtStyle}>Sneaker Hunter</Text>
           {status === 'true' ? (
-            <Text />
+            <View style={styles.iconsContainer}>
+              <Text />
+              <Icon
+                type="font-awesome"
+                name="refresh"
+                color={theme.colors.lightGrayColor}
+                size={22}
+                onPress={() => setIsFilter(false)}
+              />
+            </View>
           ) : loading ? (
             <ActivityIndicator animating color={theme.colors.primaryColor} />
           ) : (
-            <Icon
-              type="MaterialIcons"
-              name="logout"
-              color={theme.colors.lightGrayColor}
-              size={24}
-              onPress={() => handleLogout()}
-            />
+            <View style={styles.iconsContainer}>
+              <Icon
+                type="font-awesome"
+                name="refresh"
+                color={theme.colors.lightGrayColor}
+                size={22}
+                onPress={() => getStatus()}
+              />
+              <Icon
+                type="MaterialIcons"
+                name="logout"
+                color={theme.colors.lightGrayColor}
+                size={24}
+                onPress={() => handleLogout()}
+              />
+            </View>
           )}
         </View>
       </Card>
@@ -335,7 +374,7 @@ const Search = ({navigation}) => {
               inputType="default"
               capitalize={'none'}
               onChangeText={(text) => {
-                searchItem(text);
+                isFilter ? searchResults(text) : searchItem(text);
               }}
               style={styles.inputStyle}
             />
@@ -371,23 +410,43 @@ const Search = ({navigation}) => {
           />
         </TouchableOpacity>
       </View>
-      <View style={{flex: 1, justifyContent: 'center'}}>
-        {data === undefined || data.length === 0 ? (
-          isLoading ? (
-            <Text style={styles.recordsTextStyle}>Loading...</Text>
+      {isFilter ? (
+        <View style={{flex: 1, justifyContent: 'center'}}>
+          {results === undefined || results.length === 0 ? (
+            isLoading ? (
+              <Text style={styles.recordsTextStyle}>Loading...</Text>
+            ) : (
+              <Text style={styles.recordsTextStyle}>No Records Found</Text>
+            )
           ) : (
-            <Text style={styles.recordsTextStyle}>No Records Found</Text>
-          )
-        ) : (
-          <FlatList
-            data={data && data}
-            extraData={data}
-            keyExtractor={(item, index) => index.toString()}
-            renderItem={renderItem}
-            showsVerticalScrollIndicator={false}
-          />
-        )}
-      </View>
+            <FlatList
+              data={results && results}
+              extraData={results}
+              keyExtractor={(item, index) => index.toString()}
+              renderItem={renderItem}
+              showsVerticalScrollIndicator={false}
+            />
+          )}
+        </View>
+      ) : (
+        <View style={{flex: 1, justifyContent: 'center'}}>
+          {data === undefined || data.length === 0 ? (
+            isLoading ? (
+              <Text style={styles.recordsTextStyle}>Loading...</Text>
+            ) : (
+              <Text style={styles.recordsTextStyle}>No Records Found</Text>
+            )
+          ) : (
+            <FlatList
+              data={data && data}
+              extraData={data}
+              keyExtractor={(item, index) => index.toString()}
+              renderItem={renderItem}
+              showsVerticalScrollIndicator={false}
+            />
+          )}
+        </View>
+      )}
       {showModal && renderModel()}
     </SafeAreaView>
   );
