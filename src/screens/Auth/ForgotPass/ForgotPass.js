@@ -31,7 +31,7 @@ const validateEmail = (email) => {
 
 const gradientColors = [theme.colors.lightBlackColor, theme.colors.blackColor];
 
-const Login = ({navigation}) => {
+const ForgotPass = ({navigation}) => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
 
@@ -95,27 +95,21 @@ const Login = ({navigation}) => {
           nestedScrollEnabled={true}
           showsVerticalScrollIndicator={false}
           contentContainerStyle={{flexGrow: 1}}>
-          <View style={{flex: 0.3}}>
+          <View style={{flex: 0.15}}>
             <Image
               source={header}
               resizeMode="cover"
               style={styles.headerImgStyle}
             />
-            <Text
-              style={[
-                txtStyle(18).txtStyle,
-                {
-                  alignSelf: 'flex-start',
-                  marginLeft: moderateScale(30),
-                  // marginTop: moderateScale(-30),
-                },
-              ]}>
-              Hello There,{'\n'}Welcome Back
+          </View>
+          <View style={{flex: 0.15}}>
+            <Text style={styles.descTextStyle}>
+              Please enter your registered email ID to reset the password. We
+              will send you a reset password link on your registered email
+              address.
             </Text>
           </View>
-
-          <View style={{flex: 0.1}} />
-          <View style={{flex: 0.4}}>
+          <View style={{flex: 0.1}}>
             <View style={inputTxtStyle('80%').inputTxtStyle}>
               <Icon
                 type="MaterialIcons"
@@ -133,47 +127,18 @@ const Login = ({navigation}) => {
                 }}
               />
             </View>
-            <View style={inputTxtStyle('80%').inputTxtStyle}>
-              <Icon
-                type="MaterialIcons"
-                name="lock"
-                color={theme.colors.lightGrayColor}
-                size={19}
-                style={{marginLeft: 2, marginRight: 2}}
-              />
-              <InputField
-                placeholder={'Password'}
-                inputType="default"
-                capitalize={'none'}
-                secure
-                onChangeText={(text) => {
-                  setPassword(text);
-                }}
-              />
-            </View>
-            <Text
-              style={styles.forgotTextStyle}
-              onPress={() => replaceScreen('ForgotPass')}>
-              Forgot Password ?
-            </Text>
           </View>
-          <View style={{flex: 0.2, justifyContent: 'space-between'}}>
+          <View style={{flex: 0.6}}>
             <TouchableOpacity
               activeOpacity={0.9}
               style={styles.buttonStyle}
-              onPress={() => handleLogin()}>
+              onPress={() => alert('todo!')}>
               <LinearGradient
                 colors={gradientColors}
                 style={styles.linearGradient}>
-                <Text style={styles.buttonText}>Login</Text>
+                <Text style={styles.buttonText}>Send</Text>
               </LinearGradient>
             </TouchableOpacity>
-            <Text
-              style={styles.bottomTextStyle}
-              onPress={() => replaceScreen('SignUp')}>
-              New here ?{' '}
-              <Text style={{color: theme.colors.primaryColor}}>Sign Up</Text>
-            </Text>
           </View>
         </ScrollView>
       </View>
@@ -181,4 +146,4 @@ const Login = ({navigation}) => {
   );
 };
 
-export default Login;
+export default ForgotPass;
