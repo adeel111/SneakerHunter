@@ -1,4 +1,4 @@
-import React, {useState} from 'react';
+import React, {useState, useEffect} from 'react';
 import {
   View,
   Text,
@@ -9,7 +9,6 @@ import {
 } from 'react-native';
 import {Icon} from 'react-native-elements';
 import LinearGradient from 'react-native-linear-gradient';
-import AsyncStorage from '@react-native-async-storage/async-storage';
 import {header} from '../../../assets';
 import {inputTxtStyle} from '../../../utils/CommonStyles';
 import InputField from '../../../components/InputField';
@@ -20,7 +19,7 @@ import {Loading} from '../../../components/Loading';
 
 // redux stuff
 import {useDispatch, useSelector} from 'react-redux';
-// import {changePass} from '../../../redux/actions/auth';
+import {changePass} from '../../../redux/actions/auth';
 
 // Validate Email...
 const validateEmail = (email) => {
@@ -30,7 +29,7 @@ const validateEmail = (email) => {
 
 const gradientColors = [theme.colors.lightBlackColor, theme.colors.blackColor];
 
-const ResetPass = ({navigation}) => {
+const ResetPass = ({route, navigation}) => {
   const [email, setEmail] = useState('');
   const [code, setCode] = useState('');
   const [password, setPassword] = useState('');
@@ -40,27 +39,32 @@ const ResetPass = ({navigation}) => {
   const dispatch = useDispatch();
   const {isLoading} = useSelector((state) => state.auth);
 
+  useEffect(() => {
+    const {email} = route.params;
+    setEmail(email);
+  }, []);
+
   const handleChangePass = async () => {
     const validation = validateData();
     if (validation) {
       const params = {
         email: email,
-        code: code,
-        password: password,
+        pincode: code,
+        newpassword: password,
       };
-      console.log(params);
-      // dispatch(changePass(params, onSuccess, onError));
+      dispatch(changePass(params, onSuccess, onError));
     }
   };
 
-  // const onSuccess = async (res) => {
-  //   replaceScreen('BottomTabs');
-  // };
+  const onSuccess = async (res) => {
+    ShowSnackBar('Password has been reset.');
+    replaceScreen();
+  };
 
-  // const onError = (err) => {
-  //   console.log(err);
-  //   ShowSnackBar('The given data is invalid.');
-  // };
+  const onError = (err) => {
+    console.log(err);
+    ShowSnackBar('The given data is invalid.');
+  };
 
   const validateData = () => {
     if (email === '' || code === '' || password === '' || confirmPass === '') {
@@ -134,6 +138,8 @@ const ResetPass = ({navigation}) => {
                 onChangeText={(text) => {
                   setEmail(text);
                 }}
+                editable={false}
+                value={email}
               />
             </View>
             <View style={inputTxtStyle('80%').inputTxtStyle}>

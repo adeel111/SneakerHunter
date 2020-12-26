@@ -39,6 +39,7 @@ const Search = ({navigation}) => {
   const [status, setStatus] = useState('');
   const [showModal, setShowModal] = useState(false);
   const [loading, setLoading] = useState(false);
+  const [imgIndex, setImgIndex] = useState(false);
 
   //   redux stuff
   const dispatch = useDispatch();
@@ -101,12 +102,15 @@ const Search = ({navigation}) => {
         <View style={{flex: 1, flexDirection: 'row'}}>
           <TouchableOpacity
             activeOpacity={0.9}
-            onPress={() => setShowModal(!showModal)}
+            onPress={() => {
+              setImgIndex(index);
+              setShowModal(!showModal);
+            }}
             style={{flex: 0.5, backgroundColor: '#E8E8E8'}}>
             <Text style={styles.priceTxtStyle}>$ {item?.price}</Text>
             <View style={styles.imgContainer}>
               <Image
-                source={{uri: item?.image}}
+                source={{uri: item?.images[0]}}
                 resizeMode="contain"
                 style={imgStyle(width / 3.5, height / 8.5).imgStyle}
               />
@@ -173,12 +177,15 @@ const Search = ({navigation}) => {
 
           <TouchableOpacity
             activeOpacity={0.9}
-            onPress={() => setShowModal(!showModal)}
+            onPress={() => {
+              setImgIndex(index);
+              setShowModal(!showModal);
+            }}
             style={{flex: 0.5, backgroundColor: '#E8E8E8'}}>
             <Text style={styles.priceTxtStyle}>$ {item?.price}</Text>
             <View style={styles.imgContainer}>
               <Image
-                source={{uri: item?.image}}
+                source={{uri: item?.images[0]}}
                 resizeMode="contain"
                 style={imgStyle(width / 3.5, height / 8.5).imgStyle}
               />
@@ -227,7 +234,7 @@ const Search = ({navigation}) => {
             }
             paginationStyle={{}}
             loop>
-            {imagesArray.map((item, index) => {
+            {data[imgIndex]?.images?.map((item, index) => {
               return (
                 <View
                   style={{
@@ -236,7 +243,7 @@ const Search = ({navigation}) => {
                   }}>
                   <Image
                     key={index}
-                    source={item?.img}
+                    source={{uri: item}}
                     style={{width: '100%', height: height / 3, borderRadius: 5}}
                     resizeMode="contain"
                   />

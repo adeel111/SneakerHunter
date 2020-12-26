@@ -51,7 +51,7 @@ export const authReducer = (state = initialState, action) => {
         isLoading: false,
         isSuccess: true,
       };
-    case types.RESET_EMAIL_SUCCESS:
+    case types.CHANGE_PASS_SUCCESS:
       return {
         ...state,
         isLoading: false,

@@ -42,9 +42,6 @@ const ForgotPass = ({navigation}) => {
       const params = {
         email: email,
       };
-      console.log(params);
-      replaceScreen();
-      return;
       dispatch(sendEmail(params, onSuccess, onError));
     }
   };
@@ -74,7 +71,7 @@ const ForgotPass = ({navigation}) => {
   };
 
   const replaceScreen = async () => {
-    navigation.navigate('ResetPass');
+    navigation.navigate('ResetPass', {email});
   };
 
   return (

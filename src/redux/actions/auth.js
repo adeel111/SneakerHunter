@@ -68,7 +68,7 @@ export const sendEmail = (params, onSuccess, onError) => {
   return async (dispatch) => {
     dispatch(authLoading());
     try {
-      const res = await axios.post(`${BaseUrl}/logout`, params, {
+      const res = await axios.post(`${BaseUrl}/forget-password`, params, {
         headers: {
           Accept: 'application/json',
           'Content-Type': 'application/json',
@@ -85,18 +85,18 @@ export const sendEmail = (params, onSuccess, onError) => {
   };
 };
 
-export const resetEmail = (params, onSuccess, onError) => {
+export const changePass = (params, onSuccess, onError) => {
   return async (dispatch) => {
     dispatch(authLoading());
     try {
-      const res = await axios.post(`${BaseUrl}/logout`, params, {
+      const res = await axios.post(`${BaseUrl}/reset-password`, params, {
         headers: {
           Accept: 'application/json',
           'Content-Type': 'application/json',
         },
       });
       if (res) {
-        dispatch(resetEmailSuccess(res));
+        dispatch(changePassSuccess(res));
         onSuccess(res);
       }
     } catch (err) {
@@ -145,9 +145,9 @@ const sendEmailSuccess = (data) => {
   };
 };
 
-const resetEmailSuccess = (data) => {
+const changePassSuccess = (data) => {
   return {
-    type: types.RESET_EMAIL_SUCCESS,
+    type: types.CHANGE_PASS_SUCCESS,
     payload: data,
   };
 };
