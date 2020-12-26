@@ -9,10 +9,8 @@ import {
 } from 'react-native';
 import {Icon} from 'react-native-elements';
 import LinearGradient from 'react-native-linear-gradient';
-import AsyncStorage from '@react-native-async-storage/async-storage';
 import {header} from '../../../assets';
-import {inputTxtStyle, txtStyle} from '../../../utils/CommonStyles';
-import {moderateScale} from '../../../constants/ScalingUnit';
+import {inputTxtStyle} from '../../../utils/CommonStyles';
 import InputField from '../../../components/InputField';
 import ShowSnackBar from '../../../components/ShowSnackBar';
 import theme from '../../../theme';
@@ -21,7 +19,7 @@ import {Loading} from '../../../components/Loading';
 
 // redux stuff
 import {useDispatch, useSelector} from 'react-redux';
-import {login} from '../../../redux/actions/auth';
+import {sendEmail} from '../../../redux/actions/auth';
 
 // Validate Email...
 const validateEmail = (email) => {
@@ -33,26 +31,27 @@ const gradientColors = [theme.colors.lightBlackColor, theme.colors.blackColor];
 
 const ForgotPass = ({navigation}) => {
   const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
 
   //   redux stuff
   const dispatch = useDispatch();
   const {isLoading} = useSelector((state) => state.auth);
 
-  const handleLogin = async () => {
+  const handleForgotPass = async () => {
     const validation = validateData();
     if (validation) {
       const params = {
         email: email,
-        password: password,
       };
-      dispatch(login(params, onSuccess, onError));
+      console.log(params);
+      replaceScreen();
+      return;
+      dispatch(sendEmail(params, onSuccess, onError));
     }
   };
 
   const onSuccess = async (res) => {
-    await AsyncStorage.setItem('login', 'true');
-    replaceScreen('BottomTabs');
+    ShowSnackBar('Email has been sent to you.');
+    replaceScreen();
   };
 
   const onError = (err) => {
@@ -61,26 +60,21 @@ const ForgotPass = ({navigation}) => {
   };
 
   const validateData = () => {
-    if (email === '' || password === '') {
-      ShowSnackBar('Kindly fill all the fields.');
+    if (email === '') {
+      ShowSnackBar('Kindly first enter email.');
       return false;
     } else {
       if (validateEmail(email) === true) {
         return true;
       } else {
-        ShowSnackBar('Kindly enter valid email');
+        ShowSnackBar('Kindly enter valid email.');
         return false;
       }
     }
   };
 
-  const replaceScreen = async (screen) => {
-    if (screen === 'BottomTabs') {
-      await AsyncStorage.setItem('guest', 'false');
-      navigation.replace(screen);
-    } else {
-      navigation.navigate(screen);
-    }
+  const replaceScreen = async () => {
+    navigation.navigate('ResetPass');
   };
 
   return (
@@ -104,9 +98,8 @@ const ForgotPass = ({navigation}) => {
           </View>
           <View style={{flex: 0.15}}>
             <Text style={styles.descTextStyle}>
-              Please enter your registered email ID to reset the password. We
-              will send you a reset password link on your registered email
-              address.
+              Please enter your registered email ID to receive a verification
+              code.
             </Text>
           </View>
           <View style={{flex: 0.1}}>
@@ -132,7 +125,7 @@ const ForgotPass = ({navigation}) => {
             <TouchableOpacity
               activeOpacity={0.9}
               style={styles.buttonStyle}
-              onPress={() => alert('todo!')}>
+              onPress={() => handleForgotPass()}>
               <LinearGradient
                 colors={gradientColors}
                 style={styles.linearGradient}>

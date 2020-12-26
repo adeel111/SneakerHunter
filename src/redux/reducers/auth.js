@@ -45,6 +45,18 @@ export const authReducer = (state = initialState, action) => {
         isLoading: false,
         isSuccess: true,
       };
+    case types.SEND_EMAIL_SUCCESS:
+      return {
+        ...state,
+        isLoading: false,
+        isSuccess: true,
+      };
+    case types.RESET_EMAIL_SUCCESS:
+      return {
+        ...state,
+        isLoading: false,
+        isSuccess: true,
+      };
     default:
       return state;
   }

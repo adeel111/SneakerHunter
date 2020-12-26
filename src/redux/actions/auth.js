@@ -64,6 +64,48 @@ export const logout = (token, onSuccess, onError) => {
   };
 };
 
+export const sendEmail = (params, onSuccess, onError) => {
+  return async (dispatch) => {
+    dispatch(authLoading());
+    try {
+      const res = await axios.post(`${BaseUrl}/logout`, params, {
+        headers: {
+          Accept: 'application/json',
+          'Content-Type': 'application/json',
+        },
+      });
+      if (res) {
+        dispatch(sendEmailSuccess(res));
+        onSuccess(res);
+      }
+    } catch (err) {
+      dispatch(authError(err));
+      onError(err);
+    }
+  };
+};
+
+export const resetEmail = (params, onSuccess, onError) => {
+  return async (dispatch) => {
+    dispatch(authLoading());
+    try {
+      const res = await axios.post(`${BaseUrl}/logout`, params, {
+        headers: {
+          Accept: 'application/json',
+          'Content-Type': 'application/json',
+        },
+      });
+      if (res) {
+        dispatch(resetEmailSuccess(res));
+        onSuccess(res);
+      }
+    } catch (err) {
+      dispatch(authError(err));
+      onError(err);
+    }
+  };
+};
+
 // Helper Actions
 
 const authLoading = () => ({
@@ -92,6 +134,20 @@ const registerSuccess = (data) => {
 const logoutSuccess = (data) => {
   return {
     type: types.LOGOUT_SUCCESS,
+    payload: data,
+  };
+};
+
+const sendEmailSuccess = (data) => {
+  return {
+    type: types.SEND_EMAIL_SUCCESS,
+    payload: data,
+  };
+};
+
+const resetEmailSuccess = (data) => {
+  return {
+    type: types.RESET_EMAIL_SUCCESS,
     payload: data,
   };
 };
