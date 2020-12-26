@@ -116,12 +116,6 @@ const ResetPass = ({route, navigation}) => {
               style={styles.headerImgStyle}
             />
           </View>
-          <View style={{flex: 0.15}}>
-            <Text style={styles.descTextStyle}>
-              Please enter your new password and here{'\n'}to reset your old
-              password.
-            </Text>
-          </View>
           <View style={{flex: 0.1}}>
             <View style={inputTxtStyle('80%').inputTxtStyle}>
               <Icon

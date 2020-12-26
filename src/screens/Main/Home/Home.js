@@ -5,6 +5,7 @@ import {
   Image,
   Alert,
   FlatList,
+  StatusBar,
   Dimensions,
   SafeAreaView,
   TouchableOpacity,
@@ -274,6 +275,10 @@ const Search = ({navigation}) => {
 
   return (
     <SafeAreaView style={styles.mainContainer}>
+      <StatusBar
+        barStyle={'light-content'}
+        backgroundColor={theme.colors.blackColor}
+      />
       <Loading visible={isLoading} />
       <Card containerStyle={styles.headerCard}>
         <View style={styles.headerContainer}>
