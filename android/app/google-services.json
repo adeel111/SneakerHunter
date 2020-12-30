@@ -1,0 +1,62 @@
+{
+  "project_info": {
+    "project_number": "905550414919",
+    "project_id": "sneakerhunter-38929",
+    "storage_bucket": "sneakerhunter-38929.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:905550414919:android:f39c7dcda1f2cd877c5d62",
+        "android_client_info": {
+          "package_name": "com.sneakerhunter"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "905550414919-giuhcrtqtk85mu699chsus9cdjit8d0m.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.sneakerhunter",
+            "certificate_hash": "133c34e6a948830765b393fe236b62477608010a"
+          }
+        },
+        {
+          "client_id": "905550414919-prm2dnf02skgi151p9rmsm6vhjc9l3rf.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.sneakerhunter",
+            "certificate_hash": "5e8f16062ea3cd2c4a0d547876baa6f38cabf625"
+          }
+        },
+        {
+          "client_id": "905550414919-0nr5viu5n5k8nin6he6egd90mm8qfe9p.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBlSZCYcjcKAyWdlI8VsjZmW9yDnokaqyk"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "905550414919-0nr5viu5n5k8nin6he6egd90mm8qfe9p.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "905550414919-iaeb1kb1gsksfval2op82fdi9otv13in.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.sneakerhunter"
+              }
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

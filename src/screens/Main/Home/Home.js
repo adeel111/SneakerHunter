@@ -24,6 +24,10 @@ import theme from '../../../theme';
 import styles from './styles';
 import {Loading} from '../../../components/Loading';
 
+// Notifications stuff
+import {fcmService} from '../../../service/FCMService';
+import {localNotificationService} from '../../../service/LocalNotificationService';
+
 // redux stuff
 import {useDispatch, useSelector} from 'react-redux';
 import {logout} from '../../../redux/actions/auth';
@@ -39,6 +43,7 @@ const Search = ({navigation}) => {
   const [loading, setLoading] = useState(false);
   const [imgIndex, setImgIndex] = useState(false);
   let flatListRef = useRef();
+  const [notifytoken, setNotifyToken] = useState('');
 
   //   redux stuff
   const dispatch = useDispatch();
@@ -46,12 +51,11 @@ const Search = ({navigation}) => {
   const {isLoading, products} = useSelector((state) => state.home);
 
   useEffect(() => {
-    // const unsubscribe = navigation.addListener('focus', () => {
-      // goIndex();
-      getStatus();
-    // });
-    // return unsubscribe;
-  }, [navigation]);
+    getStatus();
+    fcmService.registerAppWithFCM();
+    fcmService.register(onRegister, onNotification, onOpenNotification);
+    localNotificationService.configure(onOpenNotification);
+  }, []);
 
   const getStatus = async () => {
     dispatch(getProducts(onSuccess1, onError1));
@@ -68,6 +72,44 @@ const Search = ({navigation}) => {
     console.log(err);
   };
 
+  // Starts notification work
+  const onRegister = async (token) => {
+    // Save Token...
+    // await this.props.sendDeviceToken(token, this.props.userId);
+    setNotifyToken(token);
+  };
+
+  const onNotification = (notify, remoteMessage) => {
+    console.log('Received Notification.');
+    console.log('[App] onNotification: ', notify);
+    localNotificationService.configure(onOpenNotification, remoteMessage);
+    const options = {
+      soundName: 'default',
+      playSound: true, //,
+      // largeIcon: 'ic_launcher', // add icon large for Android (Link: app/src/main/mipmap)
+      // smallIcon: 'ic_launcher' // add icon small for Android (Link: app/src/main/mipmap)
+    };
+    localNotificationService.showNotification(
+      0,
+      notify.title,
+      notify.body,
+      notify,
+      options,
+    );
+  };
+
+  const onOpenNotification = (notify, remoteMessage) => {
+    console.log('[App] onOpenNotification: ', notify);
+    console.log('[App] onOpenNotification: data ', remoteMessage);
+    if (remoteMessage) {
+      const {id, type} = remoteMessage.data;
+      console.log(type);
+      // switch (type) {
+      // }
+    }
+  };
+
+  // End notification work
   const handleReminder = async (id) => {
     const guest = await AsyncStorage.getItem('guest');
     if (guest === 'true') {
