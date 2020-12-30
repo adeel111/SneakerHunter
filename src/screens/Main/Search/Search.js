@@ -1,4 +1,4 @@
-import React, {useState, useEffect} from 'react';
+import React, {useState, useEffect, useRef} from 'react';
 import {
   View,
   Text,
@@ -19,7 +19,7 @@ import LinearGradient from 'react-native-linear-gradient';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import DateTimePickerModal from 'react-native-modal-datetime-picker';
 import ShowSnackBar from '../../../components/ShowSnackBar';
-import {one, two, three, filter} from '../../../assets';
+import {filter} from '../../../assets';
 import {imgStyle, txtStyle} from '../../../utils/CommonStyles';
 import {moderateScale} from '../../../constants/ScalingUnit';
 import theme from '../../../theme';
@@ -47,6 +47,7 @@ const Search = ({navigation}) => {
   const [showModal, setShowModal] = useState(false);
   const [loading, setLoading] = useState(false);
   const [imgIndex, setImgIndex] = useState(false);
+  let flatListRef = useRef();
 
   //   redux stuff
   const dispatch = useDispatch();
@@ -54,7 +55,11 @@ const Search = ({navigation}) => {
   const {isLoading, products} = useSelector((state) => state.home);
 
   useEffect(() => {
+    // const unsubscribe = navigation.addListener('focus', () => {
+    //   goIndex();
     getStatus();
+    // });
+    // return unsubscribe;
   }, [navigation]);
 
   const getStatus = async () => {
@@ -331,6 +336,10 @@ const Search = ({navigation}) => {
     navigation.replace('Splash');
   };
 
+  const goIndex = () => {
+    flatListRef.current.scrollToIndex({animated: true, index: 0});
+  };
+
   return (
     <SafeAreaView style={styles.mainContainer}>
       <Loading visible={isLoading} />
@@ -395,6 +404,7 @@ const Search = ({navigation}) => {
         <TouchableOpacity
           activeOpacity={0.9}
           onPress={() => togglePicker()}
+          // onPress={() => goIndex()}
           style={{
             marginRight: moderateScale(10),
           }}>
@@ -442,6 +452,7 @@ const Search = ({navigation}) => {
             )
           ) : (
             <FlatList
+              ref={flatListRef}
               data={data && data}
               extraData={data}
               keyExtractor={(item, index) => index.toString()}

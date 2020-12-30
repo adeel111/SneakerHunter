@@ -20,6 +20,21 @@ import {getReminders} from '../../../redux/actions/home';
 
 const gradientColors = [theme.colors.lightBlackColor, theme.colors.blackColor];
 
+const dummyData = [
+  {
+    description: `We're pleased to inform you, GUCCI men's footwear article #B510 is going to release today.`,
+    created_at: '12-29-2020',
+  },
+  {
+    description: `We're pleased to inform you, GUCCI men's footwear article #B510 is going to release today.`,
+    created_at: '12-29-2020',
+  },
+  {
+    description: `We're pleased to inform you, GUCCI men's footwear article #B510 is going to release today.`,
+    created_at: '12-29-2020',
+  },
+];
+
 const Notifications = ({navigation}) => {
   const [status, setStatus] = useState('');
   const [data, setData] = useState([]);
@@ -82,22 +97,29 @@ const Notifications = ({navigation}) => {
       </Card>
       <View style={{flex: 1, justifyContent: 'center'}}>
         {status === 'true' ? (
-          <View>
-            <Text style={styles.recordsTextStyle}>
-              First Login to see{'\n'}your notifications.
-            </Text>
-            <TouchableOpacity
-              activeOpacity={0.9}
-              style={styles.buttonStyle}
-              onPress={() => navigation.navigate('Auth')}>
-              <LinearGradient
-                colors={gradientColors}
-                style={styles.linearGradient}>
-                <Text style={styles.buttonText}>Login</Text>
-              </LinearGradient>
-            </TouchableOpacity>
-          </View>
-        ) : data === undefined || data.length === 0 ? (
+          <FlatList
+            data={dummyData && dummyData}
+            extraData={dummyData}
+            keyExtractor={(item, index) => index.toString()}
+            renderItem={renderItem}
+            showsVerticalScrollIndicator={false}
+          />
+        ) : // <View>
+        //   <Text style={styles.recordsTextStyle}>
+        //     First Login to see{'\n'}your notifications.
+        //   </Text>
+        //   <TouchableOpacity
+        //     activeOpacity={0.9}
+        //     style={styles.buttonStyle}
+        //     onPress={() => navigation.navigate('Auth')}>
+        //     <LinearGradient
+        //       colors={gradientColors}
+        //       style={styles.linearGradient}>
+        //       <Text style={styles.buttonText}>Login</Text>
+        //     </LinearGradient>
+        //   </TouchableOpacity>
+        // </View>
+        data === undefined || data.length === 0 ? (
           isLoading ? (
             <Text style={styles.recordsTextStyle}>Loading...</Text>
           ) : (
