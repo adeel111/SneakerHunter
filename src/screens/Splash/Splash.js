@@ -24,6 +24,7 @@ const Splash = ({navigation}) => {
       if (isLogin === 'true') {
         navigation.replace('BottomTabs');
       }
+      // navigation.replace('BottomTabs');
     })();
   }, []);
 

@@ -101,12 +101,15 @@ const Search = ({navigation}) => {
   const onOpenNotification = (notify, remoteMessage) => {
     console.log('[App] onOpenNotification: ', notify);
     console.log('[App] onOpenNotification: data ', remoteMessage);
-    if (remoteMessage) {
-      const {id, type} = remoteMessage.data;
-      console.log(type);
-      // switch (type) {
-      // }
-    }
+
+    // navigate to notification screen.
+    navigation.navigate('BottomTabs', {screen: 'Notifications'});
+
+    // if (remoteMessage) {
+    //   const {id, type} = remoteMessage.data;
+    //   console.log(type);
+    //   navigation.navigate('BottomTabs', {screen: 'Notifications'});
+    // }
   };
 
   // End notification work
