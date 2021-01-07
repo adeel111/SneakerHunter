@@ -1,4 +1,4 @@
-import React, {useState} from 'react';
+import React, {useState, useEffect} from 'react';
 import {
   View,
   Text,
@@ -8,6 +8,7 @@ import {
   TouchableOpacity,
 } from 'react-native';
 import {Icon} from 'react-native-elements';
+import DeviceInfo from 'react-native-device-info';
 import LinearGradient from 'react-native-linear-gradient';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import {header} from '../../../assets';
@@ -18,6 +19,10 @@ import ShowSnackBar from '../../../components/ShowSnackBar';
 import theme from '../../../theme';
 import styles from './styles';
 import {Loading} from '../../../components/Loading';
+
+// Notifications stuff
+import {fcmService} from '../../../service/FCMService';
+import {localNotificationService} from '../../../service/LocalNotificationService';
 
 // redux stuff
 import {useDispatch, useSelector} from 'react-redux';
@@ -34,10 +39,31 @@ const gradientColors = [theme.colors.lightBlackColor, theme.colors.blackColor];
 const Login = ({navigation}) => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
+  const [notifytoken, setNotifyToken] = useState('');
 
   //   redux stuff
   const dispatch = useDispatch();
   const {isLoading} = useSelector((state) => state.auth);
+
+  useEffect(() => {
+    fcmService.registerAppWithFCM();
+    fcmService.register(onRegister, onNotification, onOpenNotification);
+    localNotificationService.configure(onOpenNotification);
+  }, []);
+
+  // Starts notification work
+  const onRegister = async (token) => {
+    setNotifyToken(token);
+  };
+
+  const onNotification = (notify) => {
+    console.log('Received Notification.');
+  };
+
+  const onOpenNotification = (notify) => {
+    console.log('[App] onOpenNotification: ', notify);
+  };
+  // End notification work
 
   const handleLogin = async () => {
     const validation = validateData();
@@ -45,6 +71,8 @@ const Login = ({navigation}) => {
       const params = {
         email: email,
         password: password,
+        device_id: notifytoken,
+        device_platform: DeviceInfo.getSystemName(),
       };
       dispatch(login(params, onSuccess, onError));
     }

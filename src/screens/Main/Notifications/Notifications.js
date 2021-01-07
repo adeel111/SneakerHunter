@@ -16,7 +16,7 @@ import {Loading} from '../../../components/Loading';
 
 // redux stuff
 import {useDispatch, useSelector} from 'react-redux';
-import {getReminders} from '../../../redux/actions/home';
+import {getReminders, getGuestReminders} from '../../../redux/actions/home';
 
 const gradientColors = [theme.colors.lightBlackColor, theme.colors.blackColor];
 
@@ -45,15 +45,19 @@ const Notifications = ({navigation}) => {
   const {isLoading, reminders} = useSelector((state) => state.home);
 
   useEffect(() => {
-    getStatus();
-  }, []);
+    const unsubscribe = navigation.addListener('focus', () => {
+      getStatus();
+    });
+    return unsubscribe;
+  }, [navigation]);
 
   const getStatus = async () => {
     const guest = await AsyncStorage.getItem('guest');
-    if (guest === 'true') {
+    if (guest === 'false') {
+      dispatch(getReminders(token, onSuccess, onError));
       setStatus(guest);
     } else {
-      dispatch(getReminders(token, onSuccess, onError));
+      dispatch(getGuestReminders(onSuccess1, onError1));
       setStatus(guest);
     }
   };
@@ -64,6 +68,15 @@ const Notifications = ({navigation}) => {
   };
 
   const onError = (err) => {
+    console.log(err);
+  };
+
+  const onSuccess1 = (res) => {
+    console.log(res);
+    setData(res.data.data);
+  };
+
+  const onError1 = (err) => {
     console.log(err);
   };
 
@@ -96,30 +109,7 @@ const Notifications = ({navigation}) => {
         </View>
       </Card>
       <View style={{flex: 1, justifyContent: 'center'}}>
-        {status === 'true' ? (
-          <FlatList
-            data={dummyData && dummyData}
-            extraData={dummyData}
-            keyExtractor={(item, index) => index.toString()}
-            renderItem={renderItem}
-            showsVerticalScrollIndicator={false}
-          />
-        ) : // <View>
-        //   <Text style={styles.recordsTextStyle}>
-        //     First Login to see{'\n'}your notifications.
-        //   </Text>
-        //   <TouchableOpacity
-        //     activeOpacity={0.9}
-        //     style={styles.buttonStyle}
-        //     onPress={() => navigation.navigate('Auth')}>
-        //     <LinearGradient
-        //       colors={gradientColors}
-        //       style={styles.linearGradient}>
-        //       <Text style={styles.buttonText}>Login</Text>
-        //     </LinearGradient>
-        //   </TouchableOpacity>
-        // </View>
-        data === undefined || data.length === 0 ? (
+        {data === undefined || data.length === 0 ? (
           isLoading ? (
             <Text style={styles.recordsTextStyle}>Loading...</Text>
           ) : (

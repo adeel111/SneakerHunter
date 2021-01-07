@@ -43,6 +43,13 @@ export const homeReducer = (state = initialState, action) => {
         isSuccess: true,
         reminders: action.payload.data.data,
       };
+    case types.GUEST_REMINDERS_SUCCESS:
+      return {
+        ...state,
+        isLoading: false,
+        isSuccess: true,
+        reminders: action.payload.data.data,
+      };
     case types.UPDATE_PROFILE_SUCCESS:
       return {
         ...state,

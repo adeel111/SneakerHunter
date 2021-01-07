@@ -74,15 +74,12 @@ const Search = ({navigation}) => {
 
   // Starts notification work
   const onRegister = async (token) => {
-    // Save Token...
-    // await this.props.sendDeviceToken(token, this.props.userId);
     setNotifyToken(token);
   };
 
-  const onNotification = (notify, remoteMessage) => {
+  const onNotification = (notify) => {
     console.log('Received Notification.');
     console.log('[App] onNotification: ', notify);
-    localNotificationService.configure(onOpenNotification, remoteMessage);
     const options = {
       soundName: 'default',
       playSound: true, //,
@@ -98,18 +95,10 @@ const Search = ({navigation}) => {
     );
   };
 
-  const onOpenNotification = (notify, remoteMessage) => {
+  const onOpenNotification = (notify) => {
     console.log('[App] onOpenNotification: ', notify);
-    console.log('[App] onOpenNotification: data ', remoteMessage);
-
     // navigate to notification screen.
     navigation.navigate('BottomTabs', {screen: 'Notifications'});
-
-    // if (remoteMessage) {
-    //   const {id, type} = remoteMessage.data;
-    //   console.log(type);
-    //   navigation.navigate('BottomTabs', {screen: 'Notifications'});
-    // }
   };
 
   // End notification work

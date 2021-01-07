@@ -31,6 +31,12 @@ export const authReducer = (state = initialState, action) => {
         token: action.payload.data.token,
         userData: action.payload.data.user,
       };
+    case types.GUEST_TOKEN_SUCCESS:
+      return {
+        ...state,
+        isLoading: false,
+        isSuccess: true,
+      };
     case types.REGISTER_SUCCESS:
       return {
         ...state,

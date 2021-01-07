@@ -1,4 +1,4 @@
-import React, {useEffect} from 'react';
+import React, {useEffect, useState} from 'react';
 import {
   View,
   Text,
@@ -8,25 +8,76 @@ import {
   TouchableOpacity,
 } from 'react-native';
 import * as Animatable from 'react-native-animatable';
+import DeviceInfo from 'react-native-device-info';
 import LinearGradient from 'react-native-linear-gradient';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import {logo} from '../../assets';
 import {imgStyle} from '../../utils/CommonStyles';
+import ShowSnackBar from '../../components/ShowSnackBar';
 import {moderateScale} from '../../constants/ScalingUnit';
 import theme from '../../theme';
+import {Loading} from '../../components/Loading';
+
+// Notifications stuff
+import {fcmService} from '../../service/FCMService';
+import {localNotificationService} from '../../service/LocalNotificationService';
+
+// redux stuff
+import {useDispatch, useSelector} from 'react-redux';
+import {saveGuestToken} from '../../redux/actions/auth';
 
 const gradientColors = [theme.colors.lightBlackColor, theme.colors.blackColor];
 
 const Splash = ({navigation}) => {
+  const [notifytoken, setNotifyToken] = useState('');
+
+  //   redux stuff
+  const dispatch = useDispatch();
+  const {isLoading} = useSelector((state) => state.auth);
+
   useEffect(() => {
+    fcmService.registerAppWithFCM();
+    fcmService.register(onRegister, onNotification, onOpenNotification);
+    localNotificationService.configure(onOpenNotification);
+
     (async () => {
       const isLogin = await AsyncStorage.getItem('login');
       if (isLogin === 'true') {
         navigation.replace('BottomTabs');
       }
-      // navigation.replace('BottomTabs');
     })();
   }, []);
+
+  // Starts notification work
+  const onRegister = async (token) => {
+    setNotifyToken(token);
+  };
+
+  const onNotification = (notify) => {
+    console.log('Received Notification.');
+  };
+
+  const onOpenNotification = (notify) => {
+    console.log('[App] onOpenNotification: ', notify);
+  };
+  // End notification work
+
+  const handleGuest = () => {
+    const params = {
+      device_id: notifytoken,
+      device_platform: DeviceInfo.getSystemName(),
+    };
+    dispatch(saveGuestToken(params, onSuccess, onError));
+  };
+
+  const onSuccess = async (res) => {
+    replaceScreen('BottomTabs');
+  };
+
+  const onError = (err) => {
+    console.log(err);
+    ShowSnackBar('Something went wrong.');
+  };
 
   const replaceScreen = async (screen) => {
     if (screen === 'BottomTabs') {
@@ -45,6 +96,7 @@ const Splash = ({navigation}) => {
         style={styles.mainContainer}
         animation="fadeIn"
         duration={3000}>
+        <Loading visible={isLoading} />
         <Animatable.View animation="fadeInUpBig" duration={2000}>
           <Image
             source={logo}
@@ -80,7 +132,7 @@ const Splash = ({navigation}) => {
             <TouchableOpacity
               activeOpacity={0.9}
               style={{flex: 0.5}}
-              onPress={() => replaceScreen('BottomTabs')}>
+              onPress={() => handleGuest()}>
               <LinearGradient
                 colors={gradientColors}
                 style={styles.linearGradient}>

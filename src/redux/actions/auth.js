@@ -22,6 +22,22 @@ export const login = (params, onSuccess, onError) => {
   };
 };
 
+export const saveGuestToken = (params, onSuccess, onError) => {
+  return async (dispatch) => {
+    dispatch(authLoading());
+    try {
+      const res = await axios.post(`${BaseUrl}/guest/firebase-token`, params);
+      if (res) {
+        dispatch(guestTokenSuccess(res));
+        onSuccess(res);
+      }
+    } catch (err) {
+      dispatch(authError(err));
+      onError(err);
+    }
+  };
+};
+
 export const register = (params, onSuccess, onError) => {
   return async (dispatch) => {
     dispatch(authLoading());
@@ -120,6 +136,13 @@ const authError = (data) => ({
 const loginSuccess = (data) => {
   return {
     type: types.LOGIN_SUCCESS,
+    payload: data,
+  };
+};
+
+const guestTokenSuccess = (data) => {
+  return {
+    type: types.GUEST_TOKEN_SUCCESS,
     payload: data,
   };
 };

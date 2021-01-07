@@ -75,6 +75,27 @@ export const getReminders = (token, onSuccess, onError) => {
   };
 };
 
+export const getGuestReminders = (onSuccess1, onError1) => {
+  return async (dispatch) => {
+    dispatch(homeLoading());
+    try {
+      const res = await axios.get(`${BaseUrl}/guest/notifications`, {
+        headers: {
+          Accept: 'application/json',
+          'Content-Type': 'application/json',
+        },
+      });
+      if (res) {
+        dispatch(guestRemindersSuccess(res));
+        onSuccess1(res);
+      }
+    } catch (err) {
+      dispatch(homeError(err));
+      onError1(err);
+    }
+  };
+};
+
 export const updateProfile = (params, token, onSuccess, onError) => {
   return async (dispatch) => {
     dispatch(homeLoading());
@@ -129,6 +150,13 @@ const setReminderSuccess = (data) => {
 const getRemindersSuccess = (data) => {
   return {
     type: types.GET_REMINDERS_SUCCESS,
+    payload: data,
+  };
+};
+
+const guestRemindersSuccess = (data) => {
+  return {
+    type: types.GUEST_REMINDERS_SUCCESS,
     payload: data,
   };
 };
