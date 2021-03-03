@@ -109,7 +109,7 @@ const Notifications = ({navigation}) => {
         </View>
       </Card>
       <View style={{flex: 1, justifyContent: 'center'}}>
-        {data === undefined || data.length === 0 ? (
+        {data === undefined || data?.length === 0 ? (
           isLoading ? (
             <Text style={styles.recordsTextStyle}>Loading...</Text>
           ) : (
